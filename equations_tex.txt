@@ -1,4 +1,4 @@
 \dot{r_i} = & a_{i-1}^{r} r_{i-1} - (a_i^r + b_{i-1}^r + c_i^r) r_i + b_i^r r_{i+1} + d_i^r r_i^{*}\\
-\dot{r_i^{*}} = & c_{i}^{r} r_i - d_i^r r_i^{*}\\
+\dot{r_i^{*}} = & c_{i}^{r} r_i - d_i^r r_i^{*} + e_i - l_i^r r_i^{*}\\
 \dot{p_i} = & a_{i-1}^{p} p_{i-1} - (a_i^p + b_{i-1}^p + c_i^p) p_i + b_i^p p_{i+1} + d_i^p p_i^{*}\\
-\dot{p_i^{*}} = & c_{i}^{p} p_i - d_i^p p_i^{*} + t_i r_i^{*} - l_i p_i^{*}\\
+\dot{p_i^{*}} = & c_{i}^{p} p_i - d_i^p p_i^{*} + t_i r_i^{*} - l_i^p p_i^{*}\\
