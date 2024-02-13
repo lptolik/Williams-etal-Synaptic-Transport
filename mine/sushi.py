@@ -43,7 +43,7 @@ def sushi_system(h, ar, br, cr, dr, ap, bp, cp, dp, t, l):
     The rate constants for protein degradation are given by "l"
     """
 
-    N = len(ar)
+    N = len(dr)
     sec_list = allsec_preorder(h)
 
     ## State-space equations
@@ -119,22 +119,20 @@ def sushi_system(h, ar, br, cr, dr, ap, bp, cp, dp, t, l):
         A[3*N+i, 2*N+i] += cp[i]
 
     # Reattachment to belt
-    if d is not None:
-        for i in range(N):
-            # RNA reattachment
-            A[i, i + N] += d[i]
-            A[i + N, i + N] += -d[i]
-            # Protein reattachment
-            A[2*N+i, 3*N+i] += d[i]
-            A[3*N+i, 3*N+i] += -d[i]
+    for i in range(N):
+        # RNA reattachment
+        A[i, i + N] += dr[i]
+        A[i + N, i + N] += -dr[i]
+        # Protein reattachment
+        A[2*N+i, 3*N+i] += dp[i]
+        A[3*N+i, 3*N+i] += -dp[i]
 
     # Protein synthesis
-    if d is not None:
-        for i in range(N):
-            # RNA translation
-            A[3*N+i, i + N] += t[i]
-            # Protein degradation
-            A[3*N+i, 3*N+i] += -l[i]
+    for i in range(N):
+        # RNA translation
+        A[3*N+i, i + N] += t[i]
+        # Protein degradation
+        A[3*N+i, 3*N+i] += -l[i]
 
     return A
 
