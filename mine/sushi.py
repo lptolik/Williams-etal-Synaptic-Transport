@@ -72,12 +72,12 @@ def sushi_system(h, ar, br, cr, dr, ap, bp, cp, dp, t, l):
             A[i, i] += -bi
             # Protein Out of parent, into child
             ai = ap.pop()
-            A[2*N+p, 2*N+p] += -ai
-            A[2*N+i, 2*N+p] += ai
+            A[2 * N + p, 2 * N + p] += -ai
+            A[2 * N + i, 2 * N + p] += ai
             # Into parent, out of child
             bi = bp.pop()
-            A[2*N+p, 2*N+i] += bi
-            A[2*N+i, 2*N+i] += -bi
+            A[2 * N + p, 2 * N + i] += bi
+            A[2 * N + i, 2 * N + i] += -bi
 
         # visit all segments in compartment
         for (j, seg) in enumerate(section):
@@ -93,12 +93,12 @@ def sushi_system(h, ar, br, cr, dr, ap, bp, cp, dp, t, l):
                 A[i, i] += -bi
                 # Protein Out of parent, into child
                 ai = ap.pop()
-                A[2*N+i - 1, 2*N+i - 1] += -ai
-                A[2*N+i, 2*N+i - 1] += ai
+                A[2 * N + i - 1, 2 * N + i - 1] += -ai
+                A[2 * N + i, 2 * N + i - 1] += ai
                 # Protein Into parent, out of child
                 bi = bp.pop()
-                A[2*N+i - 1, 2*N+i] += bi
-                A[2*N+i, 2*N+i] += -bi
+                A[2 * N + i - 1, 2 * N + i] += bi
+                A[2 * N + i, 2 * N + i] += -bi
             # move onto next compartment
             i += 1
 
@@ -115,8 +115,8 @@ def sushi_system(h, ar, br, cr, dr, ap, bp, cp, dp, t, l):
         A[i, i] += -cr[i]
         A[i + N, i] += cr[i]
         # Protein detachment
-        A[2*N+i, 2*N+i] += -cp[i]
-        A[3*N+i, 2*N+i] += cp[i]
+        A[2 * N + i, 2 * N + i] += -cp[i]
+        A[3 * N + i, 2 * N + i] += cp[i]
 
     # Reattachment to belt
     for i in range(N):
@@ -124,15 +124,15 @@ def sushi_system(h, ar, br, cr, dr, ap, bp, cp, dp, t, l):
         A[i, i + N] += dr[i]
         A[i + N, i + N] += -dr[i]
         # Protein reattachment
-        A[2*N+i, 3*N+i] += dp[i]
-        A[3*N+i, 3*N+i] += -dp[i]
+        A[2 * N + i, 3 * N + i] += dp[i]
+        A[3 * N + i, 3 * N + i] += -dp[i]
 
     # Protein synthesis
     for i in range(N):
         # RNA translation
-        A[3*N+i, i + N] += t[i]
+        A[3 * N + i, i + N] += t[i]
         # Protein degradation
-        A[3*N+i, 3*N+i] += -l[i]
+        A[3 * N + i, 3 * N + i] += -l[i]
 
     return A
 
