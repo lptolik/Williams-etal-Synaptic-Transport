@@ -185,13 +185,13 @@ def set_uniform_rates(h, diff_coeff):
 
 def run_uniform_reattachment(h, dscale, diff_coeff_r, diff_coeff_p, l, t, **kwargs):
     # get trafficking rates (no reattachment)
-    A = make_uniform_reattachment_matrix(diff_coeff_p, diff_coeff_r, dscale, h, l, t)
+    A = make_uniform_reattachment_matrix(h, dscale, diff_coeff_p, diff_coeff_r, l, t)
     u, t, excess, err = simulate_matrix(h, A, **kwargs)
 
     return A, u, t, list(excess), err
 
 
-def make_uniform_reattachment_matrix(diff_coeff_p, diff_coeff_r, dscale, h, l, t):
+def make_uniform_reattachment_matrix(h, dscale, diff_coeff_p, diff_coeff_r, l, t):
     N = get_nsegs(h)
     ar, br, cr, _ = set_uniform_rates(h, diff_coeff_r)
     dr = [ci * dscale for ci in cr]
@@ -204,7 +204,7 @@ def make_uniform_reattachment_matrix(diff_coeff_p, diff_coeff_r, dscale, h, l, t
     return A
 
 
-def simulate_matrix(A, h, **kwargs):
+def simulate_matrix(h, A, **kwargs):
     N = get_nsegs(h)
     u, t = run_sim(h, A, **kwargs)
     # calculate excess % of cargo left on microtuble
