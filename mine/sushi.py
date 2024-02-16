@@ -12,7 +12,7 @@ from copy import copy
 from PyNeuronToolbox import morphology
 
 ## Get a list of segments
-from PyNeuronToolbox.morphology import shapeplot, allsec_preorder, root_indices, shapeplot_animate
+from PyNeuronToolbox.morphology import shapeplot, allsec_preorder, root_indices, dist_between, shapeplot_animate
 
 
 def dist_to_soma(segment):
@@ -410,3 +410,45 @@ def snapshots(h, u, t, folder, cellname, view, u_cmap, us_cmap):
         plt.savefig('./' + folder + '/' + cellname + '_us_t_' + str(int(i)) + '.eps')
 
     plt.close()
+
+
+def calculate_difference(h, fitdf, u, t, delta=1, useAmount=True):
+    """
+    Calculates eucledian distance between data in pandas data frame and model solution
+    :param h: neuron topology
+    :param fitdf: experimental data, two columns X for coordinates and V for values
+    :param u: model solution from run_sim
+    :param t: model solution times from run_sim
+    :return: series of the same length as t with distances between solution and data
+    """
+    seg_idx = prepare_seg_index(h,fitdf,delta=delta)
+    return make_dist_calc(seg_idx, u, useAmount)
+
+
+def make_dist_calc(seg_idx, u, useAmount):
+    resp = np.zeros((fitdt.shape[0], u.shape[0]))
+    for i in range(seg_idx.shape[0]):
+        ii = int(seg_idx[i, 0])
+        ij = int(seg_idx[i, 1])
+        if useAmount:
+            resp[ii] += u[:, ij].T * seg_idx[i, 2]
+        else:
+            resp[ii] += u[:, ij].T
+    dist = [sum((resp[:, i] - fitdt['V']) ** 2) for i in range(resp.shape[1])]
+    return dist
+
+
+def prepare_seg_index(h,fitdt,delta=1):
+    sec_list = allsec_preorder(h)
+    seg_list = []
+    for sec in sec_list:
+        locs = np.linspace(0, 1, sec.nseg + 2)[1:-1]
+        for loc in locs:
+            seg_list.append(sec(loc))
+    n = len(seg_list)
+    ss=seg_list[419].volume()
+
+    dts = [dist_to_soma(s) for s in seg_list]
+    seg_idx = [(i, j,seg_list[j].volume()) for i in range(fitdt.shape[0]) for j in range(n) if abs(dts[j] - fitdt['X'][i]) < 1]
+    return np.array(seg_idx)
+
