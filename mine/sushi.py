@@ -184,6 +184,18 @@ def set_uniform_rates(h, diff_coeff):
 
 
 def run_uniform_reattachment(h, dscale, diff_coeff_r, diff_coeff_p, l, t, **kwargs):
+    """
+    Make system matrix and simulate it
+    :param h: neuron geometry
+    :param dscale: how faster/slower detachment compare to attachment
+    :param diff_coeff_r: rna diffusion coefficient
+    :param diff_coeff_p: protein diffusion coefficient
+    :param l: protein degradation rate
+    :param t: protein translation rate
+    :param kwargs: other parameters to pass to the run_sim function
+    :return: A -- system matrix, u -- system solution, t -- solution time
+              excess and err -- error
+    """
     # get trafficking rates (no reattachment)
     A = make_uniform_reattachment_matrix(h, dscale, diff_coeff_p, diff_coeff_r, l, t)
     u, t, excess, err = simulate_matrix(h, A, **kwargs)
@@ -192,7 +204,16 @@ def run_uniform_reattachment(h, dscale, diff_coeff_r, diff_coeff_p, l, t, **kwar
 
 
 def make_uniform_reattachment_matrix(h, dscale, diff_coeff_p, diff_coeff_r, l, t):
-    N = get_nsegs(h)
+    """
+    Make system matrix
+    :param h: neuron geometry
+    :param diff_coeff_r: rna diffusion coefficient
+    :param diff_coeff_p: protein diffusion coefficient
+    :param l: protein degradation rate
+    :param t: protein translation rate
+    :return: A -the system matrix
+    """
+
     ar, br, cr, _ = set_uniform_rates(h, diff_coeff_r)
     dr = [ci * dscale for ci in cr]
     ap, bp, cp, _ = set_uniform_rates(h, diff_coeff_p)
@@ -205,6 +226,14 @@ def make_uniform_reattachment_matrix(h, dscale, diff_coeff_p, diff_coeff_r, l, t
 
 
 def simulate_matrix(h, A, **kwargs):
+    """
+    Simulate system definid by the matrix and estimate excess and error
+    :param h: neuron geometry
+    :param A: the system matrix
+    :param kwargs: other parameters to pass to the run_sim function
+    :return: u -- system solution, t -- solution time
+              excess and err -- error
+    """
     N = get_nsegs(h)
     u, t = run_sim(h, A, **kwargs)
     # calculate excess % of cargo left on microtuble
