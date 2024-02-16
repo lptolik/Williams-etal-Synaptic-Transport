@@ -185,6 +185,13 @@ def set_uniform_rates(h, diff_coeff):
 
 def run_uniform_reattachment(h, dscale, diff_coeff_r, diff_coeff_p, l, t, **kwargs):
     # get trafficking rates (no reattachment)
+    A = make_uniform_reattachment_matrix(diff_coeff_p, diff_coeff_r, dscale, h, l, t)
+    u, t, excess, err = simulate_matrix(h, A, **kwargs)
+
+    return A, u, t, list(excess), err
+
+
+def make_uniform_reattachment_matrix(diff_coeff_p, diff_coeff_r, dscale, h, l, t):
     N = get_nsegs(h)
     ar, br, cr, _ = set_uniform_rates(h, diff_coeff_r)
     dr = [ci * dscale for ci in cr]
@@ -192,20 +199,21 @@ def run_uniform_reattachment(h, dscale, diff_coeff_r, diff_coeff_p, l, t, **kwar
     dp = [ci * dscale for ci in cp]
     tl = [t for ci in cp]
     ll = [l for ci in cp]
-
     # get state-transition matrix
     A = sushi_system(h, ar, br, cr, dr, ap, bp, cp, dp, tl, ll)
-    u, t = run_sim(h, A, **kwargs)
+    return A
 
+
+def simulate_matrix(A, h, **kwargs):
+    N = get_nsegs(h)
+    u, t = run_sim(h, A, **kwargs)
     # calculate excess % of cargo left on microtuble
     total_cargo = np.sum(u[0, :])
     excess = 100 * np.sum(u[:, :N], axis=1) / total_cargo
-
     # calculate error
     targ = np.sum(u[0, :]) / N
     err = 100 * np.mean(np.abs(u[:, N:] - targ) / targ, axis=1)
-
-    return A, u, t, list(excess), err
+    return u, t, excess, err
 
 
 def run_uniform_sim(h, cscale, diff_coeff, **kwargs):
