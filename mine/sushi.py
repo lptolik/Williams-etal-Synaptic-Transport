@@ -425,7 +425,7 @@ def calculate_difference(h, fitdf, u, t, delta=1, useAmount=True):
     return make_dist_calc(seg_idx, u, useAmount)
 
 
-def make_dist_calc(seg_idx, u, useAmount):
+def make_dist_calc(seg_idx, u, fitdt, useAmount):
     resp = np.zeros((fitdt.shape[0], u.shape[0]))
     for i in range(seg_idx.shape[0]):
         ii = int(seg_idx[i, 0])

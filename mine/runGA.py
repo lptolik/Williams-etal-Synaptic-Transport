@@ -47,9 +47,9 @@ def costFunction(par):
     initTime = time.time()
     A = sushi.make_uniform_reattachment_matrix(h, par[0], par[1], par[2], par[3], par[4])
     u, t = sushi.run_sim(h, A)
-    dvec = sushi.make_dist_calc(seg_idx, u, useAmount=True)
+    dvec = sushi.make_dist_calc(seg_idx, u, fitdt, useAmount=True)
     FinalTime = time.time() - initTime
-    print(f"Eval time {FinalTime}; parameters: {par}")
+    print(f"Eval time {FinalTime}; parameters: {par}, result {dvec[-1]}")
     return dvec[-1]
 
 
