@@ -1,3 +1,5 @@
+# If in Jupyter or within ipython run both following lines
+# If in the terminal run nrnivmodl to load Neuron engine
 #%%bash
 #nrnivmodl
 
@@ -51,6 +53,11 @@ initTime=time.time()
 A = sushi.make_uniform_reattachment_matrix(h, 0.1, 5, 50.0, 1e-8,1e-5)
 FinalTime=time.time()-initTime
 print(f"Make matrix {FinalTime}")
+initTime=time.time()
+u, t = sushi.run_sim(h, A)
+FinalTime=time.time()-initTime
+print(f"Simulate system only: {FinalTime}")
+initTime=time.time()
 u, t, excess, err = sushi.simulate_matrix(h, A)
 FinalTime=time.time()-initTime
-print(f"Simulate system: {FinalTime}")
+print(f"Simulate system with excess estimation: {FinalTime}")
