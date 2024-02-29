@@ -386,7 +386,7 @@ def calc_time_to_ss_reattachment(A, u0, perc_ss=0.1, bound_tol=1.0, lower_bound=
 def snapshots(h, u, t, folder, cellname, view, u_cmap, us_cmap):
     xsc = np.array([0, 100])
     ysc = np.array([0, 0])
-    N = int(u.shape[1] / 2)
+    N = int(u.shape[1] / 4)
 
     fig = plt.figure()
     ax = fig.gca(projection='3d')
